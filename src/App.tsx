@@ -1,26 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import LineChart from './components/LineChart';
+import Stats from './components/Stats';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<div className="bg-slate-800 h-screen p-10 flex justify-between">
+			<LineChart></LineChart>
+			<Stats></Stats>
+		</div>
+	);
 }
 
 export default App;

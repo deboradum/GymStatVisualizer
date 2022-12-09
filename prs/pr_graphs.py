@@ -41,7 +41,7 @@ class ExcelFileReader:
         # Reads excel file.
         stats_data_sheet = pandas.read_excel(filepath, sheet_name=sheetname, na_filter=False)
         stats_data = {}
-        for _, row in stats_data_sheet.iterrows():
+        for _, row in stats_data_sheet[:42].iterrows():  # TODO NaT error bij 28/09
             # Date "dd/mm/yyyy" is represented as a key like "ddmmyyy".
             stats_data[row.get("Dag").strftime('%d%m%Y')] = Stats(row)
 
@@ -103,4 +103,4 @@ if __name__ == "__main__":
     # sheet.get_weight_plot()
     # sheet.get_pr_plots()
     # sheet.stats_data
-    sheet.print_stats_data()
+    # sheet.print_stats_data()

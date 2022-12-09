@@ -11,36 +11,43 @@ SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 
 class ExcelFileReader:
     def __init__(self, filepath):
-        self.pr_data = self.set_pr_data(filepath)
-        self.stats_data = self.set_stats_data(filepath)
+        self.pr_data = self.set_pr_data(filepath, 'PR')
+        self.stats_data = self.set_stats_data(filepath, 'Stats')
 
-    def set_pr_data(self, filepath):
-        pr_data_sheet = pandas.read_excel(filepath, sheet_name='PR', na_filter=False)
+    # Reads an excel file and returns a dictionary containing the parsed data
+    # from the excel file.
+    def set_pr_data(self, filepath, sheetname):
+        # Reads excel file.
+        pr_data_sheet = pandas.read_excel(filepath, sheet_name=sheetname, na_filter=False)
         pr_data = {}
+        # Creates a dict with exercise names as keys and an ExercisePR class as
+        # value.
         for ex in list(pr_data_sheet.columns):
+            # Parses pr data into a list as follows:
+            # "weight;reps;date" ==>  [weight, reps, date]
             prs = [entry.split(";") for entry in pr_data_sheet[ex].tolist() if entry]
             pr_data[ex] = ExercisePRs(ex, prs)
 
         return pr_data
 
+    # Prints the pr data for every exercise.
     def print_pr_data(self):
         for ex in self.pr_data:
             print(self.pr_data[ex])
 
-    def get_pr_plots(self):
-        for name in self.pr_data:
-            self.plot_ex(name)
-
-
-    def set_stats_data(self, filepath):
-        stats_data_sheet = pandas.read_excel(filepath, sheet_name='Stats', na_filter=False)
+    # Reads an excel file and returns a dictionary containing the parsed data
+    # from the excel file.
+    def set_stats_data(self, filepath, sheetname):
+        # Reads excel file.
+        stats_data_sheet = pandas.read_excel(filepath, sheet_name=sheetname, na_filter=False)
         stats_data = {}
-        for index, row in stats_data_sheet[0:10].iterrows():
-            # print(row)
+        for _, row in stats_data_sheet.iterrows():
+            # Date "dd/mm/yyyy" is represented as a key like "ddmmyyy".
             stats_data[row.get("Dag").strftime('%d%m%Y')] = Stats(row)
 
         return stats_data
 
+    # Prints the stats data for every day.
     def print_stats_data(self):
         for day in self.stats_data:
             print(self.stats_data[day])

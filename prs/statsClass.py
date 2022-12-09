@@ -60,7 +60,6 @@ class Stats:
 
         return st
 
-
     def parse_stats(self, sheet_row):
         # print(sheet_row)
         s = {"weight": sheet_row.get("Gewicht"),

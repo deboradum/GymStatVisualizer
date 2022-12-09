@@ -8,7 +8,6 @@ from statsClass import Stats
 
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 
-
 class ExcelFileReader:
     def __init__(self, filepath):
         self.pr_data = self.set_pr_data(filepath, 'PR')

@@ -18,5 +18,5 @@ class ExercisePRs:
     def parse_pr_data(self, prs_data):
         return [{"weight": datapoint[0],
                  "reps": datapoint[1],
-                 "date": datapoint[2]} # TODO NOG NAAR  DATETIME ZETTEN
+                 "date": datapoint[2]} # TODO NOG NAAR  DATETIME ZETTEN in ddmmjj
                  for datapoint in prs_data]

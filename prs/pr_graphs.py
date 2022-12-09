@@ -4,6 +4,7 @@ import matplotlib.dates as mdates
 import datetime as dt
 from pprint import pprint
 from prClass import ExercisePRs
+from statsClass import Stats
 
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 
@@ -33,11 +34,16 @@ class ExcelFileReader:
     def set_stats_data(self, filepath):
         stats_data_sheet = pandas.read_excel(filepath, sheet_name='Stats', na_filter=False)
         stats_data = {}
-        for index, row in stats_data_sheet.iterrows():
-            print(type(row))
+        for index, row in stats_data_sheet[0:10].iterrows():
+            # print(row)
+            stats_data[row.get("Dag").strftime('%d%m%Y')] = Stats(row)
 
+        return stats_data
 
-        return
+    def print_stats_data(self):
+        for day in self.stats_data:
+            print(day)
+            print(self.stats_data[day])
 
     # def plot_ex(self, ex_name):
     #     weights = [float(entry[0]) for entry in self.pr_data.get(ex_name)]
@@ -90,3 +96,4 @@ if __name__ == "__main__":
     # sheet.get_weight_plot()
     # sheet.get_pr_plots()
     # sheet.stats_data
+    sheet.print_stats_data()

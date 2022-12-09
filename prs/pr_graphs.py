@@ -8,6 +8,7 @@ from statsClass import Stats
 
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 
+
 class ExcelFileReader:
     def __init__(self, filepath):
         self.pr_data = self.set_pr_data(filepath)
@@ -42,7 +43,6 @@ class ExcelFileReader:
 
     def print_stats_data(self):
         for day in self.stats_data:
-            print(day)
             print(self.stats_data[day])
 
     # def plot_ex(self, ex_name):

@@ -1,5 +1,3 @@
-import datetime
-
 class ExercisePRs:
     def __init__(self, ex_name, prs_data):
         self.ex_name = ex_name
@@ -8,7 +6,7 @@ class ExercisePRs:
     def __str__(self):
         st = f"{self.ex_name}\n"
         for datapoint in self.data:
-            st += f"Weight: {datapoint.get('weight') + ' kg' :12s}"
+            st += f"Weight: {datapoint.get('weight') + 'kg' :12s}"
             st += f"Reps: {datapoint.get('reps'):8s}"
             st += f"Date: {datapoint.get('date')}\n"
 

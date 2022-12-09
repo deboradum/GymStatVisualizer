@@ -103,4 +103,5 @@ if __name__ == "__main__":
     # sheet.get_weight_plot()
     # sheet.get_pr_plots()
     # sheet.stats_data
+    sheet.print_pr_data()
     # sheet.print_stats_data()

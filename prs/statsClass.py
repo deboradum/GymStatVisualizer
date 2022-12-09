@@ -62,7 +62,7 @@ class Stats:
 
 
     def parse_stats(self, sheet_row):
-        print(sheet_row)
+        # print(sheet_row)
         s = {"weight": sheet_row.get("Gewicht"),
              "bf_chest": sheet_row.get("Body fat C"),
              "bf_bb": sheet_row.get("Body fat N"),

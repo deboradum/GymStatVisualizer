@@ -2,19 +2,31 @@ import pandas
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime as dt
+from pprint import pprint
+from prClass import ExercisePRs
 
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 
 # TODO Reps integreren.
 
+
 class ExcelFile:
     def __init__(self, filepath):
+        self.pr_data = self.set_pr_data(filepath)
+        self.stats_data = self.stats(filepath)
+
+    def set_pr_data(self, filepath):
         pr_data_sheet = pandas.read_excel(filepath, sheet_name='PR', na_filter=False)
-        self.pr_data = {}
+        pr_data = {}
         for ex in list(pr_data_sheet.columns):
             prs = [entry.split(";") for entry in pr_data_sheet[ex].tolist() if entry]
-            self.pr_data[ex] = prs
-        self.stats_data = self.stats(filepath)
+            pr_data[ex] = ExercisePRs(ex, prs)
+
+        return pr_data
+
+    def print_pr_data(self):
+        for ex in self.pr_data:
+            print(self.pr_data[ex])
 
     def get_pr_plots(self):
         for name in self.pr_data:
@@ -79,6 +91,6 @@ class ExcelFile:
 
 if __name__ == "__main__":
     sheet = ExcelFile(SHEET_PATH)
-    sheet.get_weight_plot()
+    # sheet.get_weight_plot()
     # sheet.get_pr_plots()
-    # sheet.stats()
+    sheet.print_pr_data()

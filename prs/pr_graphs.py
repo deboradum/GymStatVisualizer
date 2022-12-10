@@ -1,12 +1,15 @@
 import pandas
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from mpl_toolkits.axes_grid1 import host_subplot
+import mpl_toolkits.axisartist as AA
 import datetime as dt
 from pprint import pprint
 from prClass import ExercisePRs
 from statsClass import Stats
 
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
+FIGSIZE = (15,12)
 
 class ExcelFileReader:
     def __init__(self, filepath):
@@ -51,27 +54,72 @@ class ExcelFileReader:
         for day in self.stats_data:
             print(self.stats_data[day])
 
-    # def plot_ex(self, ex_name):
-    #     weights = [float(entry[0]) for entry in self.pr_data.get(ex_name)]
-    #     reps = [int(entry[1]) for entry in self.pr_data.get(ex_name)]
-    #     dates = [dt.datetime.strptime(entry[2],'%d/%m/%Y').date() for entry in self.pr_data.get(ex_name)]
 
-    #     # Changing figure size
-    #     plt.figure(figsize=(15,12))
-    #     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-    #     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=10))
-    #     # Plot domains.
-    #     plt.xlim([dt.date(2022, 1, 1), dt.date(2022, 12, 31)])
-    #     plt.ylim([int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights))])
-    #     plt.plot(dates, weights, 'ro')
-    #     plt.gcf().autofmt_xdate()
-    #     # Plot title.
-    #     plt.title(ex_name)
-    #     # Plot labels.
-    #     plt.xlabel('date (mm/dd/yyyy)')
-    #     plt.ylabel('Weight (kg)')
-    #     plt.savefig(f'{ex_name}.png')
-    #     plt.close()
+
+    def plot_ex_pr_test(self, ex_name):
+        weights = [float(entry["weight"]) for entry in self.pr_data[ex_name].data]
+        reps = [int(entry["reps"]) for entry in self.pr_data[ex_name].data]
+        dates = [dt.datetime.strptime(entry["date"],'%d/%m/%Y').date() for entry in self.pr_data[ex_name].data]
+        volumes = [r*w for r,w in zip(reps,weights)]
+
+        plt.figure(figsize=FIGSIZE)
+        plt.title(ex_name)
+        host = host_subplot(111, axes_class=AA.Axes)
+
+        par1 = host.twinx()
+
+        new_fixed_axis = par1.get_grid_helper().new_fixed_axis
+        par1.axis["right"] = new_fixed_axis(loc="right", axes=par1)
+        par1.axis["right"].toggle(all=True)
+
+        host.set_xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
+        host.set_ylim(int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights)))
+
+        host.set_xlabel('Date (dd/mm/yyyy)')
+        host.set_ylabel('Weight (kg)')
+        par1.set_ylabel("Volume (kg)")
+
+        p1, = host.plot(dates, weights, label="Weight (kg)")
+        p2, = par1.plot(dates, volumes, label="Volume (kg)")
+
+        par1.set_ylim(int(min(volumes)-0.1*min(volumes)), int(max(volumes)+0.1*max(volumes)))
+        print(host.get_ylim())
+        host.legend()
+
+        host.axis["left"].label.set_color(p1.get_color())
+        par1.axis["right"].label.set_color(p2.get_color())
+
+        plt.draw()
+        # plt.savefig(f'{ex_name}.png')
+        plt.show()
+
+        plt.close()
+
+
+
+
+
+    def plot_ex_pr(self, ex_name):
+        weights = [float(entry["weight"]) for entry in self.pr_data[ex_name].data]
+        reps = [int(entry["reps"]) for entry in self.pr_data[ex_name].data]
+        dates = [dt.datetime.strptime(entry["date"],'%d/%m/%Y').date() for entry in self.pr_data[ex_name].data]
+
+        # Changing figure size
+        plt.figure(figsize=FIGSIZE)
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=10))
+        # Plot domains.
+        plt.xlim([dt.date(2022, 1, 1), dt.date(2022, 12, 31)])
+        plt.ylim([int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights))])
+        plt.plot(dates, weights, 'ro')
+        plt.gcf().autofmt_xdate()
+        # Plot title.
+        plt.title(ex_name)
+        # Plot labels.
+        plt.xlabel('date (dd/mm/yyyy)')
+        plt.ylabel('Weight (kg)')
+        plt.savefig(f'{ex_name}.png')
+        plt.close()
 
 
 
@@ -80,7 +128,7 @@ class ExcelFileReader:
     #     dates = [date for date in self.stats_dict if self.stats_dict[date].get("Gewicht")]
 
     #     # Changing figure size
-    #     plt.figure(figsize=(15,12))
+    #     plt.figure(figsize=FIGSIZE)
     #     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
     #     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
     #     # Plot domains.
@@ -99,8 +147,9 @@ class ExcelFileReader:
 
 if __name__ == "__main__":
     sheet = ExcelFileReader(SHEET_PATH)
+    sheet.plot_ex_pr_test("Bench Press (Barbell)")
     # sheet.get_weight_plot()
     # sheet.get_pr_plots()
     # sheet.stats_data
-    sheet.print_pr_data()
+    # sheet.print_pr_data()
     # sheet.print_stats_data()

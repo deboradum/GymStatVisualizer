@@ -14,6 +14,12 @@ from statsClass import Stats
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 FIGSIZE = (15,12)
 
+CHEST_EXS = ["Bench Press (Barbell)", "Cable Crossover", "Chest Fly", "Incline Bench Press (Barbell)", "Incline Bench Press (Dumbells)"]
+BACK_SHOULDER_EXS = ["Lat Pulldown (Cable)", "Reverse Fly (Machine)", "Seated Row (Cable)", "Overhead Press (Barbell)"]
+LEG_EXS = ["Hip Ab-Adductor", "Leg Extension (Machine)", "Lying Leg Curl (Machine)", "Seated Leg Curl (Machine)", "Seated Leg Press", "Squat (Barbell)"]
+BICEPS_EXS = ["Bicep Curl (Barbell)", "Hammer Curl (Dumbell)", "Preacher Curl (Barbell)"]
+TRICEP_EXS = ["Skullcrusher (Barbell)", "Triceps Exentension (Cable)", "Triceps Pushdown (Cable)"]
+
 class ExcelFileReader:
     def __init__(self, filepath):
         self.pr_data = self.set_pr_data(filepath, 'PR')
@@ -57,16 +63,14 @@ class ExcelFileReader:
         for day in self.stats_data:
             print(self.stats_data[day])
 
-
-
-    def plot_ex_pr_test(self, ex_name):
+    # Plots a specific exercise PRs and saves to PRs folder.
+    def plot_exercise_pr(self, ex_name):
         weights = [float(entry["weight"]) for entry in self.pr_data[ex_name].data]
         reps = [int(entry["reps"]) for entry in self.pr_data[ex_name].data]
         dates = [dt.datetime.strptime(entry["date"],'%d/%m/%Y').date() for entry in self.pr_data[ex_name].data]
-        volumes = [r*w for r,w in zip(reps,weights)]
 
         plt.figure(figsize=FIGSIZE)
-        plt.title(ex_name)
+        plt.title(f'{ex_name} PRs')
 
         plt.xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
         plt.ylim(int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights)))
@@ -75,40 +79,33 @@ class ExcelFileReader:
         plt.ylabel('Weight (kg)')
 
         plt.plot(dates, weights)
-        plt.legend()
 
         plt.draw()
-        # plt.savefig(f'{ex_name}.png')
-        plt.show()
+        plt.savefig(f'../pr_plots/{ex_name}.png')
 
         plt.close()
 
+    # Plots the PR graph of every exercise.
+    def plot_all_prs(self):
+        for key in self.pr_data.keys():
+            self.plot_exercise_pr(key)
 
-
-
-
-    def plot_ex_pr(self, ex_name):
-        weights = [float(entry["weight"]) for entry in self.pr_data[ex_name].data]
-        reps = [int(entry["reps"]) for entry in self.pr_data[ex_name].data]
-        dates = [dt.datetime.strptime(entry["date"],'%d/%m/%Y').date() for entry in self.pr_data[ex_name].data]
-
-        # Changing figure size
+    # Plots the PR graph of a group of exercises in one plot.
+    def plot_group_of_exercises(self, group):
         plt.figure(figsize=FIGSIZE)
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=10))
-        # Plot domains.
-        plt.xlim([dt.date(2022, 1, 1), dt.date(2022, 12, 31)])
-        plt.ylim([int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights))])
-        plt.plot(dates, weights, 'ro')
-        plt.gcf().autofmt_xdate()
-        # Plot title.
-        plt.title(ex_name)
-        # Plot labels.
-        plt.xlabel('date (dd/mm/yyyy)')
+        plt.title(f'PRs by category')
+        plt.xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
+        plt.xlabel('Date (dd/mm/yyyy)')
         plt.ylabel('Weight (kg)')
-        plt.savefig(f'{ex_name}.png')
-        plt.close()
+        for ex in group:
+            if ex in self.pr_data.keys():
+                weights = [float(entry["weight"]) for entry in self.pr_data[ex].data]
+                dates = [dt.datetime.strptime(entry["date"],'%d/%m/%Y').date() for entry in self.pr_data[ex].data]
 
+                plt.plot(dates, weights, label=ex)
+        plt.legend()
+        plt.draw()
+        plt.show()
 
 
     # def get_weight_plot(self):
@@ -135,9 +132,9 @@ class ExcelFileReader:
 
 if __name__ == "__main__":
     sheet = ExcelFileReader(SHEET_PATH)
-    sheet.plot_ex_pr_test("Bench Press (Barbell)")
     # sheet.get_weight_plot()
-    # sheet.get_pr_plots()
-    # sheet.stats_data
+
+    sheet.plot_group_of_exercises(BACK_SHOULDER_EXS)
+
     # sheet.print_pr_data()
     # sheet.print_stats_data()

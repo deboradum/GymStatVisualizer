@@ -8,6 +8,9 @@ from pprint import pprint
 from prClass import ExercisePRs
 from statsClass import Stats
 
+# TODO plot alle chest, schouder, etc oefeningen prs in 1 plot
+# TODO enkele prs plot volume weghalen
+
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 FIGSIZE = (15,12)
 
@@ -64,30 +67,15 @@ class ExcelFileReader:
 
         plt.figure(figsize=FIGSIZE)
         plt.title(ex_name)
-        host = host_subplot(111, axes_class=AA.Axes)
 
-        par1 = host.twinx()
+        plt.xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
+        plt.ylim(int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights)))
 
-        new_fixed_axis = par1.get_grid_helper().new_fixed_axis
-        par1.axis["right"] = new_fixed_axis(loc="right", axes=par1)
-        par1.axis["right"].toggle(all=True)
+        plt.xlabel('Date (dd/mm/yyyy)')
+        plt.ylabel('Weight (kg)')
 
-        host.set_xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
-        host.set_ylim(int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights)))
-
-        host.set_xlabel('Date (dd/mm/yyyy)')
-        host.set_ylabel('Weight (kg)')
-        par1.set_ylabel("Volume (kg)")
-
-        p1, = host.plot(dates, weights, label="Weight (kg)")
-        p2, = par1.plot(dates, volumes, label="Volume (kg)")
-
-        par1.set_ylim(int(min(volumes)-0.1*min(volumes)), int(max(volumes)+0.1*max(volumes)))
-        print(host.get_ylim())
-        host.legend()
-
-        host.axis["left"].label.set_color(p1.get_color())
-        par1.axis["right"].label.set_color(p2.get_color())
+        plt.plot(dates, weights)
+        plt.legend()
 
         plt.draw()
         # plt.savefig(f'{ex_name}.png')

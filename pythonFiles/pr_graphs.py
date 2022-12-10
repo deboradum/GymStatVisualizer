@@ -91,7 +91,7 @@ class ExcelFileReader:
             self.plot_exercise_pr(key)
 
     # Plots the PR graph of a group of exercises in one plot.
-    def plot_group_of_exercises(self, group):
+    def plot_group_of_exercises(self, group, filename):
         plt.figure(figsize=FIGSIZE)
         plt.title(f'PRs by category')
         plt.xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
@@ -105,7 +105,8 @@ class ExcelFileReader:
                 plt.plot(dates, weights, label=ex)
         plt.legend()
         plt.draw()
-        plt.show()
+
+        plt.savefig(f'../pr_plots/{filename}.png')
 
 
     # def get_weight_plot(self):
@@ -133,8 +134,6 @@ class ExcelFileReader:
 if __name__ == "__main__":
     sheet = ExcelFileReader(SHEET_PATH)
     # sheet.get_weight_plot()
-
-    sheet.plot_group_of_exercises(BACK_SHOULDER_EXS)
-
+    # sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
     # sheet.print_pr_data()
     # sheet.print_stats_data()

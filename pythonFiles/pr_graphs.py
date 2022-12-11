@@ -143,9 +143,6 @@ class ExcelFileReader:
         plt.savefig('../stat_plots/weight_calories.png')
         plt.close()
 
-    def plot_weight_and_protein(self):
-        pass
-
     def plot_weight_cal_surplus(self):
         weights = [self.stats_data[day].get_weight() for day in self.stats_data if self.stats_data[day].get_weight()]
         dates_w = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_weight()]
@@ -177,7 +174,6 @@ class ExcelFileReader:
 if __name__ == "__main__":
     sheet = ExcelFileReader(SHEET_PATH)
     # sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
-    # sheet.print_pr_data()
-    # sheet.print_stats_data()
+
     sheet.plot_weight_and_cals()
     sheet.plot_weight_cal_surplus()

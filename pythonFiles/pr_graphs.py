@@ -8,9 +8,6 @@ from pprint import pprint
 from prClass import ExercisePRs
 from statsClass import Stats
 
-# TODO plot alle chest, schouder, etc oefeningen prs in 1 plot
-# TODO enkele prs plot volume weghalen
-
 SHEET_PATH = "/Users/pepijn/Desktop/Fitness.xlsx"
 FIGSIZE = (15,12)
 
@@ -136,4 +133,4 @@ if __name__ == "__main__":
     # sheet.get_weight_plot()
     # sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
     # sheet.print_pr_data()
-    # sheet.print_stats_data()
+    sheet.print_stats_data()

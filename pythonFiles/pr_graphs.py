@@ -173,7 +173,15 @@ class ExcelFileReader:
 
 if __name__ == "__main__":
     sheet = ExcelFileReader(SHEET_PATH)
-    # sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
 
+    sheet.plot_all_prs()
+
+    sheet.plot_group_of_exercises(CHEST_EXS, "chestExercises")
+    sheet.plot_group_of_exercises(BACK_SHOULDER_EXS, "BackExercises")
+    sheet.plot_group_of_exercises(LEG_EXS, "legsExercises")
+    sheet.plot_group_of_exercises(BICEPS_EXS, "bicepExercises")
+    sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
+
+    sheet.plot_weight()
     sheet.plot_weight_and_cals()
     sheet.plot_weight_cal_surplus()

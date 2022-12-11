@@ -1,4 +1,7 @@
 
+import pandas
+
+
 def ddmmyy_to_formatted(date):
     date_correct = ""
     i = 0
@@ -88,3 +91,12 @@ class Stats:
             }
 
         return s
+
+    def get_weight(self):
+        if type(self.stats.get('weight')) is type(pandas.NaT):
+            return None
+        else:
+            if self.stats.get('weight'):
+                return float(self.stats.get('weight'))
+            else:
+                return None

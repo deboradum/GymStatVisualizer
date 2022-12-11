@@ -43,23 +43,6 @@ class ExcelFileReader:
         for ex in self.pr_data:
             print(self.pr_data[ex])
 
-    # Reads an excel file and returns a dictionary containing the parsed data
-    # from the excel file.
-    def set_stats_data(self, filepath, sheetname):
-        # Reads excel file.
-        stats_data_sheet = pandas.read_excel(filepath, sheet_name=sheetname, na_filter=False)
-        stats_data = {}
-        for _, row in stats_data_sheet[:42].iterrows():  # TODO NaT error bij 28/09
-            # Date "dd/mm/yyyy" is represented as a key like "ddmmyyy".
-            stats_data[row.get("Dag").strftime('%d%m%Y')] = Stats(row)
-
-        return stats_data
-
-    # Prints the stats data for every day.
-    def print_stats_data(self):
-        for day in self.stats_data:
-            print(self.stats_data[day])
-
     # Plots a specific exercise PRs and saves to PRs folder.
     def plot_exercise_pr(self, ex_name):
         weights = [float(entry["weight"]) for entry in self.pr_data[ex_name].data]
@@ -68,18 +51,13 @@ class ExcelFileReader:
 
         plt.figure(figsize=FIGSIZE)
         plt.title(f'{ex_name} PRs')
-
         plt.xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
         plt.ylim(int(min(weights)-0.1*min(weights)), int(max(weights)+0.1*max(weights)))
-
         plt.xlabel('Date (dd/mm/yyyy)')
         plt.ylabel('Weight (kg)')
-
         plt.plot(dates, weights)
-
         plt.draw()
         plt.savefig(f'../pr_plots/{ex_name}.png')
-
         plt.close()
 
     # Plots the PR graph of every exercise.
@@ -105,27 +83,52 @@ class ExcelFileReader:
 
         plt.savefig(f'../pr_plots/{filename}.png')
 
+    # Reads an excel file and returns a dictionary containing the parsed data
+    # from the excel file.
+    def set_stats_data(self, filepath, sheetname):
+        # Reads excel file.
+        stats_data_sheet = pandas.read_excel(filepath, sheet_name=sheetname, na_filter=False)
+        stats_data = {}
+        for _, row in stats_data_sheet.iterrows():  # TODO NaT error bij 28/09
+            # Date "dd/mm/yyyy" is represented as a key like "ddmmyyy".
+            stats_data[row.get("Dag").strftime('%d%m%Y')] = Stats(row)
 
-    # def get_weight_plot(self):
-    #     weights = [self.stats_dict[date].get("Gewicht") for date in self.stats_dict if self.stats_dict[date].get("Gewicht")]
-    #     dates = [date for date in self.stats_dict if self.stats_dict[date].get("Gewicht")]
+        return stats_data
 
-    #     # Changing figure size
-    #     plt.figure(figsize=FIGSIZE)
-    #     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-    #     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
-    #     # Plot domains.
-    #     # plt.xlim([dt.date(2022, 1, 1), dt.date(2022, 12, 31)])
-    #     plt.ylim([int(min(weights)-0.05*min(weights)), int(max(weights)+0.05*max(weights))])
-    #     plt.plot(dates, weights, 'ro')
-    #     plt.gcf().autofmt_xdate()
-    #     # Plot title.
-    #     plt.title("Weight")
-    #     # Plot labels.
-    #     plt.xlabel('date (dd/mm/yyyy)')
-    #     plt.ylabel('Weight (kg)')
-    #     plt.savefig('weight.png')
-    #     plt.close()
+    # Prints the stats data for every day.
+    def print_stats_data(self):
+        for day in self.stats_data:
+            print(self.stats_data[day])
+
+    def plot_weight(self):
+        weights = [self.stats_data[day].get_weight() for day in self.stats_data if self.stats_data[day].get_weight()]
+        dates = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_weight()]
+
+        plt.figure(figsize=FIGSIZE)
+        plt.title('Weight over time')
+        # Whole year on x-axis
+        # plt.xlim(dt.date(2022, 1, 1), dt.date(2022, 12, 31))
+        # Time period where measurements were done on x-axis.
+        plt.xlim(min(dates), max(dates))
+        plt.ylim(int(min(weights)-0.04*min(weights)), int(max(weights)+0.04*max(weights)))
+        plt.xlabel('Date (dd/mm/yyyy)')
+        plt.ylabel('Weight (kg)')
+        plt.plot(dates, weights)
+        plt.draw()
+        plt.savefig('../stat_plots/weight_progression.png')
+        plt.close()
+
+    def plot_weight_and_cals(self):
+        weights = [self.stats_data[day].get_weight() for day in self.stats_data if self.stats_data[day].get_weight()]
+        dates_w = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_weight()]
+        calories_in = [self.stats_data[day].get_weight() for day in self.stats_data if self.stats_data[day].get_weight()]
+        dates_c = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_weight()]
+
+    def plot_weight_and_protein(self):
+        pass
+
+    def plot_weight_cal_surplus(self):
+        pass
 
 
 if __name__ == "__main__":
@@ -133,4 +136,5 @@ if __name__ == "__main__":
     # sheet.get_weight_plot()
     # sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
     # sheet.print_pr_data()
-    sheet.print_stats_data()
+    # sheet.print_stats_data()
+    sheet.plot_weight()

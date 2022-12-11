@@ -121,8 +121,28 @@ class ExcelFileReader:
     def plot_weight_and_cals(self):
         weights = [self.stats_data[day].get_weight() for day in self.stats_data if self.stats_data[day].get_weight()]
         dates_w = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_weight()]
-        calories_in = [self.stats_data[day].get_weight() for day in self.stats_data if self.stats_data[day].get_weight()]
-        dates_c = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_weight()]
+        calories_in = [self.stats_data[day].get_calories_in() for day in self.stats_data if self.stats_data[day].get_calories_in()]
+        dates_c = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_calories_in()]
+
+        fig,ax = plt.subplots(figsize=FIGSIZE)
+        ax.plot(dates_w, weights, "b-", label="Weight")
+        ax.set_xlabel("Date (dd/mm/yyyy)")
+        ax.set_ylabel("Weight (kg)")
+        ax.yaxis.label.set_color('blue')
+
+        ax2 = ax.twinx()
+        ax2.plot(dates_c, calories_in, "r-", label="Calories")
+        ax2.set_ylabel("Calories in (kcal)")
+        ax2.yaxis.label.set_color('red')
+
+        ax.set_title('Weight over time')
+
+        fig.legend()
+        plt.draw()
+        plt.savefig('../stat_plots/weight_calories.png')
+        plt.close()
+
+
 
     def plot_weight_and_protein(self):
         pass
@@ -137,4 +157,4 @@ if __name__ == "__main__":
     # sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
     # sheet.print_pr_data()
     # sheet.print_stats_data()
-    sheet.plot_weight()
+    sheet.plot_weight_and_cals()

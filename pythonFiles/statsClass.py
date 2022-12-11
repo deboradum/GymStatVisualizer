@@ -100,3 +100,13 @@ class Stats:
                 return float(self.stats.get('weight'))
             else:
                 return None
+
+    def get_calories_in(self):
+        if type(self.stats.get('cals_in')) is not int:
+            return None
+        # if  type(self.stats.get('cals_in')) is type(pandas.NaT):
+        #     return None
+        if self.stats.get('cals_in'):
+            return int(self.stats.get('cals_in'))
+        else:
+            return None

@@ -57,8 +57,8 @@ class Stats:
                 st += f"max heart rate cardio:      {self.stats.get('cardio_max_heart_rate'):,}bpm\n"
             if self.stats.get('calories_burned_total'):
                 st += f"total calories burned:      {self.stats.get('calories_burned_total'):,}kcal\n"
-            if self.stats.get('calories_surplus'):
-                st += f"calories surplus:           {self.stats.get('calories_surplus'):,}kcal\n"
+            if self.stats.get('calorie_surplus'):
+                st += f"calorie surplus:           {self.stats.get('calorie_surplus'):,}kcal\n"
             if self.stats.get('Notes'):
                 st += f"notes:                      {self.stats.get('Notes')}\n"
 
@@ -86,7 +86,7 @@ class Stats:
              "cardio_avg_heart_rate": sheet_row.get("Avg cardio heart rate"),
              "cardio_max_heart_rate": sheet_row.get("Max cardio heart rate"),
              "calories_burned_total": sheet_row.get("Totaal calories verbrand"),
-             "calories_surplus": sheet_row.get("Calories surplus"),
+             "calorie_surplus": sheet_row.get("Calories surplus"),
              "notes": sheet_row.get("Notes")
             }
 
@@ -108,5 +108,15 @@ class Stats:
         #     return None
         if self.stats.get('cals_in'):
             return int(self.stats.get('cals_in'))
+        else:
+            return None
+
+    def get_calorie_surplus(self):
+        if type(self.stats.get('calorie_surplus')) is not int:
+            return None
+        # if  type(self.stats.get('calorie_surplus')) is type(pandas.NaT):
+        #     return None
+        if self.stats.get('calorie_surplus'):
+            return int(self.stats.get('calorie_surplus'))
         else:
             return None

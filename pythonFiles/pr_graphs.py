@@ -126,35 +126,58 @@ class ExcelFileReader:
 
         fig,ax = plt.subplots(figsize=FIGSIZE)
         ax.plot(dates_w, weights, "b-", label="Weight")
+        ax.set_xlim(min(dates_w + dates_c), max(dates_w + dates_c))
         ax.set_xlabel("Date (dd/mm/yyyy)")
         ax.set_ylabel("Weight (kg)")
         ax.yaxis.label.set_color('blue')
 
         ax2 = ax.twinx()
         ax2.plot(dates_c, calories_in, "r-", label="Calories")
-        ax2.set_ylabel("Calories in (kcal)")
+        ax2.set_ylabel("Calories (kcal)")
         ax2.yaxis.label.set_color('red')
 
-        ax.set_title('Weight over time')
-
+        ax.set_title('Weight and caloric intake over time')
         fig.legend()
+
         plt.draw()
         plt.savefig('../stat_plots/weight_calories.png')
         plt.close()
-
-
 
     def plot_weight_and_protein(self):
         pass
 
     def plot_weight_cal_surplus(self):
-        pass
+        weights = [self.stats_data[day].get_weight() for day in self.stats_data if self.stats_data[day].get_weight()]
+        dates_w = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_weight()]
+        calorie_surplus = [self.stats_data[day].get_calorie_surplus() for day in self.stats_data if self.stats_data[day].get_calorie_surplus()]
+        dates_c = [dt.datetime.strptime(day, "%d%m%Y") for day in self.stats_data if self.stats_data[day].get_calorie_surplus()]
+
+        fig,ax = plt.subplots(figsize=FIGSIZE)
+        ax.plot(dates_w, weights, "b-", label="Weight")
+        ax.set_xlim(min(dates_w + dates_c), max(dates_w + dates_c))
+        ax.set_xlabel("Date (dd/mm/yyyy)")
+        ax.set_ylabel("Weight (kg)")
+        ax.yaxis.label.set_color('blue')
+
+        ax2 = ax.twinx()
+        ax2.plot(dates_c, calorie_surplus, "r-", label="Calorie surplus")
+        ax2.set_ylabel("Calories (kcal)")
+        ax2.yaxis.label.set_color('red')
+
+        ax2.hlines(y=0, xmin=min(dates_w + dates_c), xmax=max(dates_w + dates_c), linewidth=2, color='gray', linestyles='dotted')
+
+        ax.set_title('Weight and caloric surplus over time')
+
+        fig.legend()
+        plt.draw()
+        plt.savefig('../stat_plots/weight_calorie_surplus.png')
+        plt.close()
 
 
 if __name__ == "__main__":
     sheet = ExcelFileReader(SHEET_PATH)
-    # sheet.get_weight_plot()
     # sheet.plot_group_of_exercises(TRICEP_EXS, "tricepExercises")
     # sheet.print_pr_data()
     # sheet.print_stats_data()
     sheet.plot_weight_and_cals()
+    sheet.plot_weight_cal_surplus()
